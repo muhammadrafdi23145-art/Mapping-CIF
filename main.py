@@ -79,9 +79,11 @@ if file_db and file_target:
                 "nw": "nahdlatul wathan",
                 "wi": "wahdah islamiyyah",
                 "ma": "mathla'ul anwar",
-                "nu": "nahdlatul ulama",
-                "pbnu": "nahdlatul ulama",
-                "al washliyah": "al jamiyatul washliyah"
+                "washliyah": "al jamiyatul washliyah",
+                "ii": "al irsyad islamiyah",
+                "al": "alkhairat",
+                "si": "syarikat islam",
+                "ldii": "lembaga dakwah islam indonesia"
             }
 
             def terjemahkan_singkatan(teks):
@@ -95,9 +97,9 @@ if file_db and file_target:
 
             # Daftar GAM
             target_gam_list = [
-                "al irsyad islamiyah", "al jamiyatul washliyah", "alkhairat", "mui", "majelis ulama indonesia",
+                "al irsyad islamiyah", "al jamiyatul washliyah", "alkhairat", "majelis ulama indonesia",
                 "mathla'ul anwar", "persatuan islam", "persatuan umat islam",
-                "syarikat islam", "wahdah islamiyyah", "nahdlatul wathan"
+                "syarikat islam", "wahdah islamiyyah", "nahdlatul wathan", "lembaga dakwah islam indonesia"
             ]
 
             # Menentukan kolom nama di database internal (fallback ke namacif / fullname jika ada)
