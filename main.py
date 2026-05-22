@@ -10,8 +10,11 @@ st.set_page_config(
     layout="wide"
 )
 
+# PEMBARUAN 1: Optimasi Memori dengan Cache. 
+# Berfungsi agar file besar (250MB) tidak dibaca ulang dari nol setiap kali user berinteraksi dengan tombol/slider.
+@st.cache_data(show_spinner="Sedang membaca berkas data (mohon tunggu)...")
 def load_data(uploaded_file):
-    """Fungsi untuk membaca berkas unggahan di Streamlit"""
+    """Fungsi untuk membaca berkas unggahan di Streamlit dengan optimalisasi Cache"""
     try:
         file_name = uploaded_file.name.lower()
         if file_name.endswith(('.xlsx', '.xls')):
@@ -60,7 +63,7 @@ if file_db and file_target:
     df_target = load_data(file_target)
 
     if db_internal is not None and df_target is not None:
-        st.success("✅ Kedua file berhasil dimuat!")
+        st.success("✅ Kedua file berhasil dimuat ke dalam memori aplikasi!")
 
         if st.button("🚀 Mulai Proses Mapping", type="primary"):
             
@@ -71,7 +74,7 @@ if file_db and file_target:
             db_internal_clean.columns = [str(c).strip().lower() for c in db_internal_clean.columns]
             df_target_clean.columns = [str(c).strip().lower() for c in df_target_clean.columns]
             
-            # --- KAMUS SINGKATAN (Tambahkan singkatan lain di sini jika perlu) ---
+            # --- KAMUS SINGKATAN (Sesuai kode asli Anda) ---
             kamus_singkatan = {
                 "mui": "majelis ulama indonesia",
                 "pui": "persatuan umat islam",
@@ -89,9 +92,7 @@ if file_db and file_target:
             def terjemahkan_singkatan(teks):
                 """Fungsi untuk menerjemahkan kata per kata berdasarkan kamus di atas"""
                 if not isinstance(teks, str) or teks == "nan": return ""
-                # Pecah menjadi kata per kata, ubah ke lowercase
                 kata_kata = teks.lower().split()
-                # Terjemahkan jika ada di kamus, jika tidak biarkan aslinya
                 kata_terjemahan = [kamus_singkatan.get(kata, kata) for kata in kata_kata]
                 return " ".join(kata_terjemahan)
 
@@ -116,7 +117,6 @@ if file_db and file_target:
             
             if col_nama_db in db_internal_clean.columns:
                 db_internal_clean[col_nama_db] = db_internal_clean[col_nama_db].fillna("").astype(str)
-                # Terapkan juga kamus singkatan ke DB Internal (berjaga-jaga jika terbalik)
                 db_internal_clean['nama_untuk_ai'] = db_internal_clean[col_nama_db].apply(terjemahkan_singkatan)
             else:
                 st.error("❌ Kolom namarekening/namacif/fullname tidak ditemukan di Database Internal.")
@@ -129,7 +129,7 @@ if file_db and file_target:
                     if val and val != "nan":
                         db_rek_dict[val] = idx
 
-            # List nama DB untuk Fuzzy Match (sudah diterjemahkan jika ada singkatan)
+            # List nama DB untuk Fuzzy Match
             db_names = db_internal_clean['nama_untuk_ai'].tolist()
 
             # --- Proses Pencocokan ---
@@ -139,16 +139,20 @@ if file_db and file_target:
             status_text = st.empty()
             total_rows = len(df_target_clean)
 
+            # PEMBARUAN 2: Optimasi beban rendering progress UI. 
+            # Update UI dilakukan setiap kelipatan 1% jumlah data agar pemrosesan file besar berjalan maksimal.
+            update_interval = max(1, total_rows // 100)
+
             for idx, row in df_target_clean.iterrows():
-                if idx % 10 == 0 or idx == total_rows - 1:
+                if idx % update_interval == 0 or idx == total_rows - 1:
                     progress_bar.progress((idx + 1) / total_rows)
-                    status_text.text(f"Memproses baris data ke-{idx + 1} dari {total_rows}...")
+                    status_text.text(f"Memproses data: {idx + 1} / {total_rows} ({((idx + 1) / total_rows) * 100:.0f}%)")
 
                 rek_target = str(row['norekening']).replace(".0", "").strip() if 'norekening' in df_target_clean.columns else ""
                 nama_target_asli = str(row['namarekening']).strip() if 'namarekening' in df_target_clean.columns else ""
                 gam_target = str(row['gam']).strip().lower() if 'gam' in df_target_clean.columns else ""
                 
-                # Terjemahkan nama target (MUI -> majelis ulama indonesia)
+                # Terjemahkan nama target
                 nama_target_terjemahan = terjemahkan_singkatan(nama_target_asli)
 
                 match_idx = None
