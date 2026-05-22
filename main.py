@@ -48,7 +48,7 @@ threshold = st.sidebar.slider(
 st.sidebar.markdown("---")
 st.sidebar.info("""
 **Daftar Target GAM Berdasarkan Sistem:**
-* Al Irsyad Islamiyah, Al Jamiyatul Washliyah, Alkhairat, MUI, Mathla'ul Anwar, Persatuan Islam, Persatuan Umat Islam, Syarikat Islam, Wahdah Islamiyyah, Nahdlatul Wathan.
+* Al Irsyad Islamiyah, Al Jamiyatul Washliyah, Alkhairat, Majelis Ulama Indonesia, Mathla'ul Anwar, Persatuan Islam, Persatuan Umat Islam, Syarikat Islam, Wahdah Islamiyyah, Nahdlatul Wathan.
 """)
 
 # --- Layout Kolom Upload File ---
