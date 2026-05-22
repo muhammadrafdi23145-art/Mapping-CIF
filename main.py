@@ -83,7 +83,7 @@ if file_db and file_target:
             col_db_rek = st.selectbox("Kolom Nomor Rekening:", db_cols, index=guess_column(db_cols, ['norekening', 'NOrekening','norek', 'rekening', 'acc']))
             col_db_nama = st.selectbox("Kolom Nama Nasabah/CIF:", db_cols, index=guess_column(db_cols, ['namarekening', 'NAMArekening', 'fullname', 'nama', 'cust']))
             col_db_cif = st.selectbox("Kolom Nomor CIF:", db_cols, index=guess_column(db_cols, ['nocif', 'NOcif', 'id']))
-            col_db_cif = st.selectbox("Kolom Nama CIF:", db_cols, index=guess_column(db_cols, ['namacif', 'namaCIF', 'name', 'nama']
+            col_db_namacif = st.selectbox("Kolom Nama CIF:", db_cols, index=guess_column(db_cols, ['namacif', 'NAMACIF', 'name', 'nama']
             col_db_saldo = st.selectbox("Kolom Saldo SMK:", db_cols, index=guess_column(db_cols, ['saldosmk', 'saldoSMK','saldo', 'bal']))
 
         with c_sel2:
